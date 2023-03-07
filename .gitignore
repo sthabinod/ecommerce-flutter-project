@@ -282,3 +282,4 @@ ecommerce/media/
 /myenv
 myenv
 .env
+myenv/pyvenv.cfg
