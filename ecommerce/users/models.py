@@ -16,7 +16,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=100)  # type: ignore
     last_name = models.CharField(max_length=100)  # type: ignore
     email = models.EmailField(max_length=100, unique=True)
-    REQUIRED_FIELDS = [] 
+    REQUIRED_FIELDS = ['username'] 
     def get_absolute_url(self):
         """Get url for user's detail view.
 
