@@ -13,28 +13,19 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path(
-        "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
-    ),
-    # Django Admin, use {% url 'admin:index' %}
-    path(settings.ADMIN_URL, admin.site.urls),
-    # User management
-    path("users/", include("ecommerce.users.urls", namespace="users")),
-    path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
 urlpatterns += [
     # API base url
-    path("api/v1/", include("ecommerce.api.v1.urls", namespace="api_v1")),
-    path("api/", include("config.api_router")),
+    # path("api/v1/", include("ecommerce.api.v1.urls", namespace="api_v1")),
+    # path("api/", include("config.api_router")),
+    path("product/", include("ecommerce.product.api.v1.urls", namespace="product")),
+    path("users/", include("ecommerce.users.api.v1.urls", namespace="users")),
     # DRF auth token
-    path("auth-token/", obtain_auth_token),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
-        "api/docs/",
+        "",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs",
     )

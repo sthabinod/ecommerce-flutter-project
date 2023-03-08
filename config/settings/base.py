@@ -63,7 +63,9 @@ DJANGO_APPS = [
     "django.contrib.admin",
     "django.forms",
     "rest_framework_swagger",
-    "product"
+    "product",
+    "core",
+    "order"
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
