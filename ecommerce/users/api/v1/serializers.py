@@ -113,14 +113,14 @@ class RegisterSerializer(serializers.ModelSerializer):
 
        
 
-        email_subject = "TLMS Account Approval"
-        message = render_to_string(
-            "email_templates/trainee_user_registration_by_admin.html",
-            {
-                "email": email,
-                "password": password,
-            },
-        )
+        # email_subject = "TLMS Account Approval"
+        # message = render_to_string(
+        #     "email_templates/trainee_user_registration_by_admin.html",
+        #     {
+        #         "email": email,
+        #         "password": password,
+        #     },
+        # )
         # send_email(email_subject, message, EMAIL_HOST_USER, [email])
         return validate_data
 
