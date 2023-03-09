@@ -7,6 +7,7 @@ app_name = "product"
 
 urlpatterns = [
     # API base url
-    path('list/', views.GetProduct.as_view(), name='List Product'),
+    path('product-list/', views.GetProduct.as_view(), name='List Product'),
+    path('categories-list/', views.GetCategory.as_view(), name='List Categories'),
 ]
 
