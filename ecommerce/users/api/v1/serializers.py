@@ -172,6 +172,9 @@ class ResetPasswordEmailRequestSerializer(serializers.Serializer):
             # relativeLink = reverse(
             #     kwargs={"link":"reset-password","uidb64": uidb64, "token": token},
             # )
+            print(token)
+            print(uidb64)
+            print(user)
             userID = self.context.get("userID")
 
             if userID == 1:

@@ -1,9 +1,15 @@
 from rest_framework.serializers import ModelSerializer,Serializer
-from ecommerce.product.models import Product
+from ecommerce.order.models import Order,OrderItem
 
-class ProductSerializer(ModelSerializer):
+class OrderItemSerailizer(ModelSerializer):
     class Meta:
-        model=Product
+        model=OrderItem
+        fields='__all__'
+        
+
+class OrderSerailizer(ModelSerializer):
+    class Meta:
+        model=Order
         fields='__all__'
         
         

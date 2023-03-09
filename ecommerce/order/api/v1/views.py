@@ -1,13 +1,19 @@
 from rest_framework.views import APIView
-from ecommerce.product.models import Product
-from ecommerce.product.api.v1.serializers import ProductSerializer
+from ecommerce.order.models import OrderItem,Order
+from ecommerce.order.api.v1.serializers import OrderSerailizer,OrderItemSerailizer
 from rest_framework.response import Response
 from rest_framework import status
 
-class GetProduct(APIView):
+class UserOrderView(APIView):
     # permission_classes=[]
     def get(self,request,format=None):
-         product = Product.objects.all()
-         serializer = ProductSerializer(product,many=True)
-         return Response(status=status.HTTP_200_OK,data=serializer.data)
+        user = request.user
+        order = Order.objects.filter(user=user)
+        serializer = OrderSerailizer(order,many=True)
+        return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": "All Orders",
+            })
          

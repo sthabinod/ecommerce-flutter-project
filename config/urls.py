@@ -27,6 +27,7 @@ urlpatterns += [
     ),
     path("product/", include("ecommerce.product.api.v1.urls", namespace="product")),
     path("users/", include("ecommerce.users.api.v1.urls", namespace="users")),
+    path("order/", include("ecommerce.order.api.v1.urls", namespace="order")),
     # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
