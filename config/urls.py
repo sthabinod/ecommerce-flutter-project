@@ -13,22 +13,20 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
+    path(settings.ADMIN_URL, admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
 urlpatterns += [
-    # API base url
-    # path("api/v1/", include("ecommerce.api.v1.urls", namespace="api_v1")),
-    # path("api/", include("config.api_router")),
-    path("product/", include("ecommerce.product.api.v1.urls", namespace="product")),
-    path("users/", include("ecommerce.users.api.v1.urls", namespace="users")),
     # DRF auth token
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "",
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs",
-    )
+    ),
+    path("product/", include("ecommerce.product.api.v1.urls", namespace="product")),
+    path("users/", include("ecommerce.users.api.v1.urls", namespace="users")),
     # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
