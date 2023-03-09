@@ -88,7 +88,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ["email","full_name"]
+        fields = ["email","full_name","mobile_number"]
         # extra_kwargs = {"password": {"write_only": True}}
         
         
@@ -102,8 +102,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         # mobile_number = self._kwargs["data"].pop("mobile_number")
         email = self._kwargs["data"].pop("email")
         full_name = self._kwargs["data"].pop("full_name")
+        mobile_number = self._kwargs["data"].pop("mobile_number")
+        date_of_birth = self._kwargs["data"].pop("date_of_birth")
 
-        user = User.objects.create(email=email,full_name=full_name)
+        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth)
 
         if errors:
             raise serializers.ValidationError(

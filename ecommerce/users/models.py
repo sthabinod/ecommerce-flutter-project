@@ -20,6 +20,8 @@ class User(AbstractUser):
     middle_name = None
     email = models.EmailField(max_length=100, unique=True)
     REQUIRED_FIELDS = ['username'] 
+    mobile_number = models.CharField(max_length=100)
+    date_of_birth = models.CharField(max_length=100)
     objects = CustomUserManager()
     
     
@@ -42,7 +44,5 @@ class Address(TimeStampAbstractModel):
     
 
 class UserProfile(TimeStampAbstractModel):
-    mobile_number = models.CharField(max_length=100)
     profile_image = models.ImageField(upload_to='user_profile',null=True,blank=True)
-    date_of_birth = models.CharField(max_length=100)
     user = models.OneToOneField(User,on_delete=models.CASCADE)
