@@ -16,4 +16,17 @@ class UserOrderView(APIView):
                 "data": serializer.data,
                 "message": "All Orders",
             })
+
+class UserOrderItemByOrder(APIView):
+    # permission_classes=[]
+    def get(self,request,id,format=None):
+        
+        order_item = OrderItem.objects.filter(order=id)
+        serializer = OrderItemSerailizer(order_item,many=True)
+        return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": "All Orders",
+            })        
          
