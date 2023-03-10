@@ -53,6 +53,7 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
         password = attrs.get("password")
 
         user = authenticate(email=email, password=password)
+        print(user)
         # email exist
         if not user:
             if User.objects.filter(email=email).exists():

@@ -12,9 +12,8 @@ User = get_user_model()
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
   
-    list_display = ["email", "first_name", "is_superuser"]
-    search_fields = ["first_name"]
-
+    list_display = ["email", "full_name", "is_superuser"]
+    search_fields = ["full_name"]
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     pass

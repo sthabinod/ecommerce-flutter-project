@@ -19,7 +19,7 @@ class CartItems(TimeStampAbstractModel):
     
     
 class Order(TimeStampAbstractModel):
-    order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
         "users.User",
         on_delete=models.SET_NULL,
@@ -32,7 +32,7 @@ class Order(TimeStampAbstractModel):
 class OrderItem(TimeStampAbstractModel):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items",)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
     
     
     

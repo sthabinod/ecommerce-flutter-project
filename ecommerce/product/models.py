@@ -4,6 +4,7 @@ from ecommerce.core.models import TimeStampAbstractModel
 
 class Category(TimeStampAbstractModel):
     name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='category_image',null=True,blank=True)
     description = models.TextField()
     
     def __str__(self) -> str:
@@ -11,7 +12,7 @@ class Category(TimeStampAbstractModel):
 
 
 
-class Product(models.Model):
+class Product(TimeStampAbstractModel):
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.IntegerField()

@@ -4,7 +4,7 @@ from ecommerce.product.models import Product,Category
 class ProductSerializer(ModelSerializer):
     class Meta:
         model=Product
-        fields='__all__'
+        fields=['id','name','description','price','image','category','quantity','created_at','updated_at']
         
         
         
@@ -12,6 +12,6 @@ class ProductSerializer(ModelSerializer):
 class CategorySerializer(ModelSerializer):
     class Meta:
         model=Category
-        fields=['name','description']
+        fields=['id','name','description','created_at','updated_at']
         
         
