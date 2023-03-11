@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin):
+class UserAdmin(admin.ModelAdmin):
   
     list_display = ["email", "full_name", "is_superuser"]
     search_fields = ["full_name"]

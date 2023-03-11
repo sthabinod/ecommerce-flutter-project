@@ -8,6 +8,6 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         try:
-            import ecommerce.users.signals  # noqa F401
+            import ecommerce.users.signals 
         except ImportError:
             pass

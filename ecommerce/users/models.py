@@ -12,6 +12,7 @@ class User(AbstractUser):
     check forms.SignupForm and forms.SocialSignupForms accordingly.
     """
     USERNAME_FIELD = 'email'
+    EMAIL_FIELD = 'email'
     #: First and last name do not cover name patterns around the globe
     full_name = CharField(_("Name of User"), blank=True, max_length=255)
     # username = None  # type: ignore
@@ -21,16 +22,12 @@ class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     REQUIRED_FIELDS = ['username'] 
     mobile_number = models.CharField(max_length=100)
-    date_of_birth = models.CharField(max_length=100)
+    date_of_birth = models.DateField(null=True,blank=True)
     objects = CustomUserManager()
     
     
-    def get_absolute_url(self):
-        """Get url for user's detail view.
-        Returns:
-            str: URL for user detail.
-        """
-        return reverse("users:detail", kwargs={"username": self.email})
+    def __str__(self) -> str:
+        return self.email
 
 
 class Address(TimeStampAbstractModel):
