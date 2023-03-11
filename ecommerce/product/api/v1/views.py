@@ -61,3 +61,17 @@ class ProductDetailView(APIView):
        
     
     
+class SearchProduct(APIView):
+    def get(self,request,search_key,format=None):
+
+        if Product.objects.filter(name__icontains=search_key).exists():
+            product = Product.objects.filter(name__icontains=search_key)
+            serializer = ProductSerializer(product,many=True)
+            return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": f"Found Product with {search_key}",
+            })
+        else:
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {search_key} keyword not found!"})      
