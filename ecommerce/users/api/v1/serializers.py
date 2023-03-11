@@ -266,9 +266,9 @@ class ChangePasswordSerializer(serializers.Serializer):
     Takes old_password, new_password and confirm password for changing password
     """
 
-    old_password = serializers.CharField(min_length=6, write_only=True)
-    new_password = serializers.CharField(min_length=6, write_only=True)
-    confirm_password = serializers.CharField(min_length=6, write_only=True)
+    old_password = serializers.CharField(min_length=4, write_only=True)
+    new_password = serializers.CharField(min_length=4, write_only=True)
+    confirm_password = serializers.CharField(min_length=4, write_only=True)
 
     class Meta:
         fields = ["old_password", "new_password", "confirm_password"]
