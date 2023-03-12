@@ -26,6 +26,7 @@ class User(AbstractUser):
     reset_otp = models.CharField(max_length=4)
     date_of_birth = models.DateField(null=True,blank=True)
     is_verified = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     objects = CustomUserManager()
     
     
