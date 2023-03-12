@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from ecommerce.users.api.v1.views import (
-    UserLoginView,UserRegisterView,RequestPasswordResetEmail,PasswordTokenCheckAPI,SetNewPasswordAPIView,ChangePassword
+    UserLoginView,UserRegisterView,RequestPasswordResetEmail,PasswordTokenCheckAPI,SetNewPasswordAPIView,ChangePassword,VerifyOTP
 )
 
 
@@ -10,6 +10,7 @@ from ecommerce.users.api.v1.views import (
 app_name = "users"
 urlpatterns = [
     path("login/", UserLoginView.as_view(), name="login"),
+    path("verify-otp/", VerifyOTP.as_view(), name="verify-otp"),
     path("register/", UserRegisterView.as_view(), name="register"),
     path("change-password/", ChangePassword.as_view(), name="change-password"),
     path(

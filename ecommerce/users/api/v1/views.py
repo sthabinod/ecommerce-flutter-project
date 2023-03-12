@@ -5,7 +5,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer
+from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 
@@ -54,6 +54,38 @@ class UserLoginView(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class VerifyOTP(APIView):
+    serializer_class=VerifyOTPSerializer
+    permission_classes = ()
+    def post(self,request):
+        data = request.data
+        print(data)
+        # if Product.objects.filter(name__icontains=search_key).exists():
+        # user_otp = User.objects.get(user=user)
+        # serializer = self.serializer_class(data=request.data,context={"request":request})
+        # if serializer.is_valid():
+        if User.objects.filter(email=request.data['email']):
+            user = User.objects.get(email=request.data['email'])
+            if request.data['otp']==user.otp:
+                user.is_verified=True
+                user.save()
+                return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "OTP Verified Successful",
+                }
+              )
+            else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "OTP is not matched"})
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "User not found with this email address!"})
+            
 
 class UserRegisterView(APIView):
     serializer_class=RegisterSerializer

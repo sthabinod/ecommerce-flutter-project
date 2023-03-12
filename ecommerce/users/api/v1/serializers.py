@@ -9,7 +9,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate, get_user_model
 from datetime import datetime
-from .utils import generate_random_password
+from .utils import generate_random_password,generate_otp
 from django.template.loader import render_to_string
 from config.settings.base import EMAIL_HOST_USER
 from django.utils.encoding import force_str, smart_bytes, smart_str
@@ -54,13 +54,29 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
 
         user = authenticate(email=email, password=password)
         print(user)
+        
+        
         # email exist
-        if not user:
+        if user:
+            if user.is_verified==False:
+                errors["not_verified"] = "Please verify your account!"
+            elif user.is_verified:
+                user.last_login = datetime.now()
+                user.save()
+
+                refresh = self.get_token(user)
+
+                response = {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+                }
+                return response
+        elif not user:
             if User.objects.filter(email=email).exists():
                 errors["email"] = "Invalid Credential"
 
 
-     
+
             # if user.last_login == "":
             #     errors[
             #         "first_login_check"
@@ -73,16 +89,7 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
                     "errors": errors,
                 }
             )
-        user.last_login = datetime.now()
-        user.save()
-
-        refresh = self.get_token(user)
-
-        response = {
-            "refresh": str(refresh),
-            "access": str(refresh.access_token),
-        }
-        return response
+        
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -108,7 +115,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         username = self._kwargs["data"].pop("username")
         
 
-        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth,username=username)
+        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth,username=username,is_active=True)
 
         if errors:
             raise serializers.ValidationError(
@@ -119,9 +126,14 @@ class RegisterSerializer(serializers.ModelSerializer):
                 }
             )
         password = generate_random_password()
+        otp = generate_otp()
         user.username=generate_random_password()
         user.set_password(password)
+        user.is_active=False
+        user.otp=otp
         user.save()
+        print(f"____________________________          {otp}           _____________________________________")
+        print(f"____________________________          {password}           _____________________________________")
 
         # email_subject = "TLMS Account Approval"
         # message = render_to_string(
@@ -154,7 +166,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
   
   
-  
+class VerifyOTPSerializer(serializers.Serializer):
+    otp = serializers.CharField(max_length=5)
+    email = serializers.EmailField()
+    
+   
+
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     """
     Resets password using user email
@@ -299,5 +316,6 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(new_password)
         user.save()
         return super().validate(attrs)
-
-
+    
+    
+  

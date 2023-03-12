@@ -12,7 +12,7 @@ User = get_user_model()
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
   
-    list_display = ["email", "full_name", "is_superuser"]
+    list_display = ["email", "full_name", "is_active","is_verified"]
     search_fields = ["full_name"]
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
