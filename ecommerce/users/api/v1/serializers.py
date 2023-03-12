@@ -115,8 +115,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         username = self._kwargs["data"].pop("username")
         
 
-        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth,username=username,is_active=True)
-
+        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth,username=username)
         if errors:
             raise serializers.ValidationError(
                 {
@@ -129,7 +128,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         otp = generate_otp()
         user.username=generate_random_password()
         user.set_password(password)
-        user.is_active=False
         user.otp=otp
         user.save()
         print(f"____________________________          {otp}           _____________________________________")

@@ -69,7 +69,6 @@ class VerifyOTP(APIView):
             user = User.objects.get(email=request.data['email'])
             if request.data['otp']==user.otp:
                 user.is_verified=True
-                user.is_active=True
                 user.save()
                 return Response(
                 {
