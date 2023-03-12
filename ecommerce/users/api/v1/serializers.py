@@ -164,14 +164,41 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
         return data
 
+class ResetPasswordSendSerializer(serializers.Serializer):
+    """
+    Resets password using user email
+    """
+    
+
+    email = serializers.EmailField(max_length=100)
+
+    class Meta:
+        fields = ["email"]
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            otp = generate_otp()
+            user.reset_otp=otp
+            user.save()
+            print(f"____________________________          {otp}           _____________________________________")
+            # send_email(email_subject, email_body, EMAIL_HOST_USER, [email])
+
+        else:
+            raise serializers.ValidationError({"message": "Email is not registered!"})
+
+        return attrs
+
+
   
   
 class VerifyOTPSerializer(serializers.Serializer):
     otp = serializers.CharField(max_length=5)
     email = serializers.EmailField()
     
-   
-
+class VerifyOTPResetSerializer(serializers.Serializer):
+    otp = serializers.CharField(max_length=5)
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     """
     Resets password using user email
@@ -319,3 +346,36 @@ class ChangePasswordSerializer(serializers.Serializer):
     
     
   
+  
+class ChangePasswordAfterOTPSerializer(serializers.Serializer):
+    """
+    Takes old_password, new_password and confirm password for changing password
+    """
+
+    new_password = serializers.CharField(min_length=4, write_only=True)
+    confirm_password = serializers.CharField(min_length=4, write_only=True)
+
+    class Meta:
+        fields = ["new_password", "confirm_password"]
+
+    def validate(self, attrs):
+        errors = {}
+
+        user_id = self.context["id"]
+        user = User.objects.get(id=user_id)
+        new_password = attrs.get("new_password")
+        confirm_password = attrs.get("confirm_password")
+        if new_password != confirm_password:
+            errors["new_password"] = "Password does not match!"
+
+        if errors:
+            raise serializers.ValidationError(
+                {
+                    "status": "fail",
+                    "statusCode": status.HTTP_400_BAD_REQUEST,
+                    "errors": errors,
+                }
+            )
+        user.set_password(new_password)
+        user.save()
+        return super().validate(attrs)

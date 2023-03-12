@@ -23,6 +23,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username'] 
     mobile_number = models.CharField(max_length=100)
     otp = models.CharField(max_length=4)
+    reset_otp = models.CharField(max_length=4)
     date_of_birth = models.DateField(null=True,blank=True)
     is_verified = models.BooleanField(default=False)
     objects = CustomUserManager()

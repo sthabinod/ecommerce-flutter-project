@@ -5,7 +5,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer
+from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer,ResetPasswordSendSerializer,VerifyOTPResetSerializer,ChangePasswordAfterOTPSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
 
@@ -75,6 +75,7 @@ class VerifyOTP(APIView):
                     "status": "Success",
                     "statusCode": status.HTTP_200_OK,
                     "message": "OTP Verified Successful",
+                    "user_id":user.id
                 }
               )
             else:
@@ -85,6 +86,67 @@ class VerifyOTP(APIView):
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
                     "message": "User not found with this email address!"})
+
+class VerifyOTPReset(APIView):
+    serializer_class=VerifyOTPResetSerializer
+    permission_classes = ()
+    def post(self,request):
+        data = request.data
+        print(data)
+        # if Product.objects.filter(name__icontains=search_key).exists():
+        # user_otp = User.objects.get(user=user)
+        # serializer = self.serializer_class(data=request.data,context={"request":request})
+        # if serializer.is_valid():
+        if User.objects.filter(reset_otp=request.data['otp']):
+            user = User.objects.get(reset_otp=request.data['otp'])
+            if request.data['otp']==user.reset_otp:
+           
+                
+                return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "OTP Verified Successful",
+                    "user_id":user.id
+                }
+              )
+            else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "OTP is not matched"})
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "OTP expired or not found!"})
+
+
+
+
+class ResetPasswordSend(APIView):
+    serializer_class=ResetPasswordSendSerializer
+    permission_classes = ()
+    def post(self,request):
+        data = request.data
+        print(data)
+        # if Product.objects.filter(name__icontains=search_key).exists():
+        # user_otp = User.objects.get(user=user)
+        serializer = self.serializer_class(data=request.data,context={"request":request})
+        # if serializer.is_valid():
+        if serializer.is_valid():   
+         
+                return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "OTP has been sent in your mail",
+                }
+              )
+         
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "error": serializer.errors})
+   
             
 
 class UserRegisterView(APIView):
@@ -194,5 +256,34 @@ class ChangePassword(generics.GenericAPIView):
                 "status": "success",
                 "statusCode": status.HTTP_200_OK,
                 "message": "Password Changed",
+            },
+        )
+
+
+
+class ChangePasswordAfterOTP(generics.GenericAPIView):
+    serializer_class = ChangePasswordAfterOTPSerializer
+    permission_classes=()
+    http_method_names = ["patch"]
+
+    @extend_schema(
+        operation_id="Change Password",
+        description="The user password changed",
+        request=ChangePasswordAfterOTPSerializer,
+    )
+    def patch(self,request,id):
+        # must pass in serializer after login credential
+        # user=self.request.user
+        serializer = self.serializer_class(
+            data=request.data, context={"id": id}
+        )
+        serializer.is_valid(
+            raise_exception=True,
+        )
+        return Response(
+            {
+                "status": "success",
+                "statusCode": status.HTTP_200_OK,
+                "message": "Password has been set successfully!",
             },
         )
