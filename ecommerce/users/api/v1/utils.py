@@ -1,5 +1,7 @@
 import string
 import random
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def generate_random_password():
@@ -27,3 +29,11 @@ def generate_otp():
     otp = "".join(temp)
 
     return otp
+
+
+def send_mail(subject,message,user):
+    subject = subject
+    message = message
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [user.email, ]
+    send_mail( subject, message, email_from, recipient_list )

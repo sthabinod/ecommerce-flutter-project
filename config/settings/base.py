@@ -308,6 +308,11 @@ SPECTACULAR_SETTINGS = {
 
 # Email configuration
 
+
+
+
+
+
 EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND")
 EMAIL_HOST = env("DJANGO_EMAIL_HOST")
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
