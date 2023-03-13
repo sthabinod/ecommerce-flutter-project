@@ -48,3 +48,29 @@ class CartItemByUser(APIView):
             })
         else:
             return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"Cart is not found for user"})      
+
+
+
+class AddToCartView(APIView):
+    serializer_class=CartItemSerailizer
+    def post(self,request):
+        data = request.data
+        print(data)
+        # if Product.objects.filter(name__icontains=search_key).exists():
+        # user_otp = User.objects.get(user=user)
+        serializer = self.serializer_class(data=request.data,context={"request":request})
+        # if serializer.is_valid():
+        if serializer.is_valid():   
+         
+                return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "Cart added successfully",
+                }
+              )
+         
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "error": serializer.errors})

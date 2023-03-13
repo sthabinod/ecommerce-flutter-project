@@ -287,3 +287,4 @@ class ChangePasswordAfterOTP(generics.GenericAPIView):
                 "message": "Password has been set successfully!",
             },
         )
+

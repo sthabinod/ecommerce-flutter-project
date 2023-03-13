@@ -130,7 +130,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.otp=otp
         user.save()
-        print(f"____________________________          {otp}           _____________________________________")
+        print(f"____________________________          {otp}                _____________________________________")
         print(f"____________________________          {password}           _____________________________________")
 
         # email_subject = "TLMS Account Approval"

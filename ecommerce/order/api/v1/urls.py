@@ -10,5 +10,7 @@ urlpatterns = [
     path('list-user-order/', views.UserOrderView.as_view(), name='User Order'),
     path('list-order-items-by-order/<uuid:id>/', views.UserOrderItemByOrder.as_view(), name='User Order Items By Order'),
     path('list-cart-items-by-user/', views.CartItemByUser.as_view(), name='User Order Items By Order'),
+    path("add-to-cart/", views.AddToCartView.as_view(), name="add_to_cart_view"),
+    
 ]
 
