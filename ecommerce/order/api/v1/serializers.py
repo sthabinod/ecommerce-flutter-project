@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer,Serializer
 from ecommerce.order.models import Order,OrderItem,Cart,CartItems
-
+from ecommerce.product.models import Product
+from rest_framework import serializers,status
 class OrderItemSerailizer(ModelSerializer):
     class Meta:
         model=OrderItem
@@ -21,22 +22,16 @@ class CartItemSerailizer(ModelSerializer):
         read_only_fields=('cart',)
         
 
-    def create(self, validate_data,request):
+    def create(self,validate_data):
 
         errors = {}
-        cart = request.user
-        # first_name = self._kwargs["data"].pop("first_name")
-        # middle_name = self._kwargs["data"].pop("middle_name")
-        # last_name = self._kwargs["data"].pop("last_name")
-        # mobile_number = self._kwargs["data"].pop("mobile_number")
-        product = self._kwargs["data"].pop("product_id")
+        user = validate_data.pop('user')
+        product = self._kwargs["data"].pop("product")
+        product_obj = Product.objects.get(id=product)
         quantity = self._kwargs["data"].pop("quantity")
-        cart = self._kwargs["data"].pop("mobile_number")
-        date_of_birth = self._kwargs["data"].pop("date_of_birth")
-        username = self._kwargs["data"].pop("username")
+        cart = Cart.objects.get(user=user)
         
-
-        user = User.objects.create(email=email,full_name=full_name,mobile_number=mobile_number,date_of_birth=date_of_birth,username=username)
+        cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart)
         if errors:
             raise serializers.ValidationError(
                 {
@@ -45,19 +40,12 @@ class CartItemSerailizer(ModelSerializer):
                     "errors": errors,
                 }
             )
-        password = generate_random_password()
-        otp = generate_otp()
-        user.username=generate_random_password()
-        user.set_password(password)
-        user.otp=otp
-        user.save()
-        print(f"____________________________          {otp}                _____________________________________")
-        print(f"____________________________          {password}           _____________________________________")
-
+        return validate_data
+     
 class CartSerailizer(ModelSerializer):
     class Meta:
         model=Cart
         fields='__all__'
-        
+    
         
         

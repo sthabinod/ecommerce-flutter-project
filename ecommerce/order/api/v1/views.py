@@ -54,15 +54,15 @@ class CartItemByUser(APIView):
 class AddToCartView(APIView):
     serializer_class=CartItemSerailizer
     def post(self,request):
-        data = request.data
-        print(data)
+        data = request.data.copy()
+        data['user'] = request.user
         # if Product.objects.filter(name__icontains=search_key).exists():
         # user_otp = User.objects.get(user=user)
-        serializer = self.serializer_class(data=request.data,context={"request":request})
+        serializer = self.serializer_class(data=data)
         # if serializer.is_valid():
         if serializer.is_valid():   
-         
-                return Response(
+            serializer.save(user=request.user)
+            return Response(
                 {
                     "status": "Success",
                     "statusCode": status.HTTP_200_OK,

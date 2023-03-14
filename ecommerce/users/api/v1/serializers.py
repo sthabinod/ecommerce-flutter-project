@@ -72,7 +72,6 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
                 }
                 return response
         elif not user:
-            if User.objects.filter(email=email).exists():
                 errors["email"] = "Invalid Credential"
 
 
