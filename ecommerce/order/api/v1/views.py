@@ -55,7 +55,6 @@ class AddToCartView(APIView):
     serializer_class=CartItemSerailizer
     def post(self,request):
         data = request.data.copy()
-        data['user'] = request.user
         # if Product.objects.filter(name__icontains=search_key).exists():
         # user_otp = User.objects.get(user=user)
         serializer = self.serializer_class(data=data)
@@ -67,6 +66,28 @@ class AddToCartView(APIView):
                     "status": "Success",
                     "statusCode": status.HTTP_200_OK,
                     "message": "Cart added successfully",
+                }
+              )
+         
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "error": serializer.errors})
+                
+                
+class OrderProductView(APIView):
+    serializer_class=OrderItemSerailizer
+    def post(self,request):
+        data = request.data.copy()
+        
+        serializer = self.serializer_class(data=request.data,many=True)
+        if serializer.is_valid():   
+            serializer.save()
+            return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "Order created successfully",
                 }
               )
          

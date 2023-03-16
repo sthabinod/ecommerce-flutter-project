@@ -55,10 +55,13 @@ class UserLoginView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
 class VerifyOTP(APIView):
     serializer_class=VerifyOTPSerializer
     permission_classes = ()
     def post(self,request):
+      
         data = request.data
         print(data)
         # if Product.objects.filter(name__icontains=search_key).exists():
