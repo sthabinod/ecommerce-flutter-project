@@ -78,7 +78,6 @@ class AddToCartView(APIView):
 class OrderProductView(APIView):
     serializer_class=OrderItemSerailizer
     def post(self,request):
-        data = request.data.copy()
         
         serializer = self.serializer_class(data=request.data,many=True)
         if serializer.is_valid():   
