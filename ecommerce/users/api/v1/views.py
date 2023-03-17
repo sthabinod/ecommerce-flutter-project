@@ -5,13 +5,28 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer,ResetPasswordSendSerializer,VerifyOTPResetSerializer,ChangePasswordAfterOTPSerializer
+from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer,ResetPasswordSendSerializer,VerifyOTPResetSerializer,ChangePasswordAfterOTPSerializer,AddressSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
-from rest_framework import serializers
-
-from .serializers import UserSerializer
+from ecommerce.users.models import Address
+from ecommerce.users.api.v1.serializers import UserSerializer
 
 User = get_user_model()
+
+class ListAddressByUser(APIView):
+    def get(self,request,format=None):
+        user = request.user
+        if Address.objects.filter(user=user).exists():
+            user_address = Address.objects.filter(user=user)
+            serializer = AddressSerializer(user_address,many=True)
+            return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": "All address for user fetched",
+            })
+        else:
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"No address of the user"})      
+
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):

@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer,Serializer
 from ecommerce.product.models import Product,Category, Color,Size
-
+from rest_framework import serializers
 
 class SizeSerializer(ModelSerializer):
     class Meta:
@@ -30,4 +30,9 @@ class CategorySerializer(ModelSerializer):
         model=Category
         fields=['id','name','image','description']
         
+
+
+class PriceProductSearchSerializer(serializers.Serializer):
+    from_price = serializers.CharField()
+    to_price = serializers.CharField()
         

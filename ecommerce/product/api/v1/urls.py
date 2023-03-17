@@ -12,5 +12,6 @@ urlpatterns = [
     path('category-product/<int:id>/', views.GetCategoryWiseProduct.as_view(), name='Filter Categories wise Filter'),
     path('product-detail/<int:pk>/', views.ProductDetailView.as_view(),name='Get Single Product'),
     path('product-search/<str:search_key>/', views.SearchProduct.as_view(),name='Get Searched Product'),
+    path('product-filter-by-price/', views.SearchProductByPrice.as_view(),name='Get Searched Product by price'),
 ]
 

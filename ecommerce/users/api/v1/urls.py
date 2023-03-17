@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from ecommerce.users.api.v1.views import (
-    UserLoginView,UserRegisterView,ChangePassword,VerifyOTP,ResetPasswordSend,VerifyOTPReset,ChangePasswordAfterOTP
+    UserLoginView,UserRegisterView,ChangePassword,VerifyOTP,ResetPasswordSend,VerifyOTPReset,ChangePasswordAfterOTP,ListAddressByUser
 )
 
 
@@ -16,6 +16,9 @@ urlpatterns = [
     path("change-password/", ChangePassword.as_view(), name="change_password"),
     path("verify-otp-reset/", VerifyOTPReset.as_view(), name="verify_otp_reset"),
     path("change-password-after-otp/<int:id>", ChangePasswordAfterOTP.as_view(), name="change_password_after_otp"),
+    path("address-by-user/", ListAddressByUser.as_view(), name="address_by_user"),
+
+    
     # path(
     #     "request-reset-email/userID/<int:userID>/",
     #     RequestPasswordResetEmail.as_view(),

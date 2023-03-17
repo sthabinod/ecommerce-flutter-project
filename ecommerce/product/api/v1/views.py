@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from ecommerce.product.models import Product,Category
-from ecommerce.product.api.v1.serializers import ProductSerializer,CategorySerializer
+from ecommerce.product.api.v1.serializers import ProductSerializer,CategorySerializer,PriceProductSearchSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from ecommerce.product.pagination import CustomPagination
@@ -75,3 +75,20 @@ class SearchProduct(APIView):
             })
         else:
             return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {search_key} keyword not found!"})      
+
+class SearchProductByPrice(APIView):
+    serializer_class=PriceProductSearchSerializer
+    def post(self,request):
+        from_price = request.data['from_price']
+        to_price = request.data['to_price']
+        if Product.objects.filter(price__gte=from_price, price__lte=to_price).exists():
+            product = Product.objects.filter(price__gte=from_price, price__lte=to_price)
+            serializer = self.serializer_class(product,many=True)
+            return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": f"Found Product with {from_price} to {to_price}",
+            })
+        else:
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      

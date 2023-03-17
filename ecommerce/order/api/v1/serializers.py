@@ -4,45 +4,33 @@ from ecommerce.product.models import Product
 from rest_framework import serializers,status
 from ecommerce.product.api.v1.serializers import ProductSerializer
 
-class OrderItemSerailizer(ModelSerializer):
+class OrderItemWriteSerailizer(ModelSerializer):
     class Meta:
         model=OrderItem
-        fields=('product','quantity','order')
+        fields=('product','quantity','order','size','color')
         read_only_fields=('order',)
-        
-    
-    
-    
-    def create(self,validated_data):
 
-        errors = {}
-        # user = validate_data.pop('user')
-        # product = validate_data.pop("product")
-        # quantity = validate_data.pop("quantity")
-        
-        # order_details = validate_data.pop('orderitem_set')
-        # order = Order.objects.create(user=user)
-        
-        order_items = []
-        
-        for order in validated_data:
-            obj = OrderItem(**order)
-            order_items.append(obj)
+    
+    def create(self, validated_data):
+        # order=Order.objects.create(user=self.context.get('user'))
+        validated_data.update({'order':self.context.get('order')})
+        return super().create(validated_data)
+    
+    
+    
+class OrderItemSerailizer(ModelSerializer):
+    product = ProductSerializer()
+    class Meta:
+        model=OrderItem
+        fields=('product','quantity','order','size','color')
+        read_only_fields=('order',)
 
-        
-        # new_order= OrderItem.objects.create(user=user)
-      
-        order_items = OrderItem.objects.bulk_create(order_items)
-        if errors:
-            raise serializers.ValidationError(
-                {
-                    "status": "fail",
-                    "statusCode": status.HTTP_400_BAD_REQUEST,
-                    "errors": errors,
-                }
-            )
-        return validate_data
-        
+    
+    def create(self, validated_data):
+        # order=Order.objects.create(user=self.context.get('user'))
+        validated_data.update({'order':self.context.get('order')})
+        return super().create(validated_data)
+
 
 class OrderSerailizer(ModelSerializer):
     class Meta:
@@ -52,7 +40,20 @@ class OrderSerailizer(ModelSerializer):
 
 
 class CartItemSerailizer(ModelSerializer):
-    product = ProductSerializer(read_only=True)
+    product = ProductSerializer()
+    
+    class Meta:
+        model=CartItems
+        fields=['product','quantity','cart']
+        read_only_fields=('cart',)
+        
+
+    
+    
+    
+
+class CartItemWriteSerailizer(ModelSerializer):
+    
     class Meta:
         model=CartItems
         fields=['product','quantity','cart']
@@ -68,7 +69,7 @@ class CartItemSerailizer(ModelSerializer):
         quantity = self._kwargs["data"].pop("quantity")
         cart = Cart.objects.get(user=user)
         
-        cart_items = CartItems.objects.bulk_create(product=product_obj,quantity=quantity,cart=cart)
+        cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart)
         if errors:
             raise serializers.ValidationError(
                 {

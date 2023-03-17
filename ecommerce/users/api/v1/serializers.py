@@ -14,18 +14,16 @@ from django.template.loader import render_to_string
 from config.settings.base import EMAIL_HOST_USER
 from django.utils.encoding import force_str, smart_bytes, smart_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from ecommerce.users.models import Address,User
 
-User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username", "name", "url"]
+        fields = ["email", "full_name"]
 
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "username"}
-        }
+    
 
 
 
@@ -88,8 +86,11 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
                     "errors": errors,
                 }
             )
-        
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['street','city','postal_code','country']
 
 class RegisterSerializer(serializers.ModelSerializer):
     

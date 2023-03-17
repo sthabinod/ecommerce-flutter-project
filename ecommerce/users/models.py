@@ -38,6 +38,7 @@ class Address(TimeStampAbstractModel):
     city = models.CharField(max_length=200)
     postal_code = models.IntegerField()
     country= models.CharField(max_length=100)
+    user = models.ManyToManyField(User)
     
     def __str__(self) -> str:
         return self.street

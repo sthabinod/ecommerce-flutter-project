@@ -1,6 +1,7 @@
 from django.db import models
 from ecommerce.core.models import TimeStampAbstractModel
-from ecommerce.product.models import Product
+from ecommerce.product.models import Product,Size,Color
+from ecommerce.users.models import Address
 import uuid
 class Cart(TimeStampAbstractModel):
     user = models.OneToOneField(
@@ -27,12 +28,17 @@ class Order(TimeStampAbstractModel):
         blank=True,
         related_name="order",
     )
+    address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    
     
     
 class OrderItem(TimeStampAbstractModel):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.IntegerField()
     order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
+    size = models.ForeignKey(Size,on_delete=models.CASCADE)
+    color = models.ForeignKey(Color,on_delete=models.CASCADE)
+    
     
     
     
