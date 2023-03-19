@@ -33,6 +33,12 @@ class CategorySerializer(ModelSerializer):
 
 
 class PriceProductSearchSerializer(serializers.Serializer):
-    from_price = serializers.CharField()
-    to_price = serializers.CharField()
+    from_price = serializers.IntegerField()
+    to_price = serializers.IntegerField()
         
+        
+    def validate(self, attrs):
+        
+        
+        
+        return super().validate(attrs)

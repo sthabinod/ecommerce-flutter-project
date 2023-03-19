@@ -83,7 +83,7 @@ class SearchProductByPrice(APIView):
         to_price = request.data['to_price']
         if Product.objects.filter(price__gte=from_price, price__lte=to_price).exists():
             product = Product.objects.filter(price__gte=from_price, price__lte=to_price)
-            serializer = self.serializer_class(product,many=True)
+            serializer = ProductSerializer(product,many=True)
             return Response( {
                 "status": "Success",
                 "statusCode": status.HTTP_200_OK,
