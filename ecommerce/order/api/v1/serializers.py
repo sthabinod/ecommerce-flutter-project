@@ -25,11 +25,7 @@ class OrderItemSerailizer(ModelSerializer):
         fields=('product','quantity','order','size','color')
         read_only_fields=('order',)
 
-    
-    def create(self, validated_data):
-        # order=Order.objects.create(user=self.context.get('user'))
-        validated_data.update({'order':self.context.get('order')})
-        return super().create(validated_data)
+ 
 
 
 class OrderSerailizer(ModelSerializer):

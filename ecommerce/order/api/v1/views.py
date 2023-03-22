@@ -100,3 +100,23 @@ class OrderProductView(APIView):
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
                     "error": serializer.errors})
+                
+class CheckoutView(APIView):
+    serializer_class=OrderItemSerailizer
+    def post(self,request):
+        
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():   
+            serializer.save()
+            return Response(
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "message": "Order details fetched!",
+                }
+              )
+         
+        else:
+                return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "error": serializer.errors})

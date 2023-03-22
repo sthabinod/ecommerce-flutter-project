@@ -37,8 +37,5 @@ class PriceProductSearchSerializer(serializers.Serializer):
     to_price = serializers.IntegerField()
         
         
-    def validate(self, attrs):
+  
         
-        
-        
-        return super().validate(attrs)

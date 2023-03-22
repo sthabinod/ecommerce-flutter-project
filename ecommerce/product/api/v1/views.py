@@ -81,14 +81,17 @@ class SearchProductByPrice(APIView):
     def post(self,request):
         from_price = request.data['from_price']
         to_price = request.data['to_price']
-        if Product.objects.filter(price__gte=from_price, price__lte=to_price).exists():
-            product = Product.objects.filter(price__gte=from_price, price__lte=to_price)
-            serializer = ProductSerializer(product,many=True)
-            return Response( {
+        if to_price>=to_price:
+            if Product.objects.filter(price__gte=from_price, price__lte=to_price).exists():
+                product = Product.objects.filter(price__gte=from_price, price__lte=to_price)
+                serializer = ProductSerializer(product,many=True)
+                return Response( {
                 "status": "Success",
                 "statusCode": status.HTTP_200_OK,
                 "data": serializer.data,
                 "message": f"Found Product with {from_price} to {to_price}",
-            })
+                })
+            else:
+                return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      
+            return Response({"status":"ERROR","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      

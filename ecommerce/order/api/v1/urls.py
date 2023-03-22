@@ -12,6 +12,7 @@ urlpatterns = [
     path('list-cart-items-by-user/', views.CartItemByUser.as_view(), name='User Order Items By Order'),
     path("add-to-cart/", views.AddToCartView.as_view(), name="add_to_cart_view"),
     path("order-products/", views.OrderProductView.as_view(), name="order_product_view"),
+    path("checkout/", views.CheckoutView.as_view(), name="checkout"),
     
 ]
 
