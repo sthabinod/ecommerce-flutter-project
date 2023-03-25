@@ -22,8 +22,8 @@ class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     REQUIRED_FIELDS = ['username'] 
     mobile_number = models.CharField(max_length=100)
-    otp = models.CharField(max_length=4)
-    reset_otp = models.CharField(max_length=4)
+    otp = models.CharField(max_length=6)
+    reset_otp = models.CharField(max_length=6)
     date_of_birth = models.DateField(null=True,blank=True)
     is_verified = models.BooleanField(default=False)
     objects = CustomUserManager()

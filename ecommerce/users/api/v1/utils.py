@@ -19,12 +19,9 @@ def generate_random_password():
 
 def generate_otp():
 
-    lower = string.ascii_lowercase
-    upper = string.ascii_uppercase
     num = string.digits
 
-    all = lower + upper + num
-    temp = random.sample(all, 4)
+    temp = random.sample(num, 6)
 
     otp = "".join(temp)
 
