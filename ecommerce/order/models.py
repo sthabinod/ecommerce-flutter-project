@@ -16,7 +16,9 @@ class Cart(TimeStampAbstractModel):
 class CartItems(TimeStampAbstractModel):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="cart_items",)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,related_name="cart_items")
+    size = models.ForeignKey(Size,on_delete=models.CASCADE)
+    color = models.ForeignKey(Color,on_delete=models.CASCADE)
     
     
 class Order(TimeStampAbstractModel):

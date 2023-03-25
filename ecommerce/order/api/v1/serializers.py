@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer,Serializer
 from ecommerce.order.models import Order,OrderItem,Cart,CartItems
-from ecommerce.product.models import Product
+from ecommerce.product.models import Product,Size,Color
 from rest_framework import serializers,status
 from ecommerce.product.api.v1.serializers import ProductSerializer
 
@@ -40,7 +40,7 @@ class CartItemSerailizer(ModelSerializer):
     
     class Meta:
         model=CartItems
-        fields=['product','quantity','cart']
+        fields=['product','quantity','cart','size','color']
         read_only_fields=('cart',)
         
 
@@ -52,7 +52,7 @@ class CartItemWriteSerailizer(ModelSerializer):
     
     class Meta:
         model=CartItems
-        fields=['product','quantity','cart']
+        fields=['product','quantity','cart','size','color']
         read_only_fields=('cart',)
         
 
@@ -61,11 +61,16 @@ class CartItemWriteSerailizer(ModelSerializer):
         errors = {}
         user = validate_data.pop('user')
         product = self._kwargs["data"].pop("product")
-        product_obj = Product.objects.get(id=product)
+        color = self._kwargs["data"].pop("color")
         quantity = self._kwargs["data"].pop("quantity")
+        size = self._kwargs["data"].pop("size")
+        
+        product_obj = Product.objects.get(id=product)
+        size_obj = Size.objects.get(id=size)
+        color_obj = Color.objects.get(id=color)
         cart = Cart.objects.get(user=user)
         
-        cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart)
+        cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart,color=color_obj,size=size_obj)
         if errors:
             raise serializers.ValidationError(
                 {
