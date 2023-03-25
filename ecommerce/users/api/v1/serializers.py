@@ -15,7 +15,8 @@ from config.settings.base import EMAIL_HOST_USER
 from django.utils.encoding import force_str, smart_bytes, smart_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from ecommerce.users.models import Address,User
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -133,7 +134,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         print(f"____________________________          {otp}                _____________________________________")
         print(f"____________________________          {password}           _____________________________________")
 
-        # email_subject = "TLMS Account Approval"
+        email_subject = "OTP Verification"
         # message = render_to_string(
         #     "email_templates/trainee_user_registration_by_admin.html",
         #     {
@@ -141,7 +142,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         #         "password": password,
         #     },
         # )
-        # send_email(email_subject, message, EMAIL_HOST_USER, [email])
+        message = f"Please verify your otp, Your OTP is: {otp}"
+        send_mail(email_subject, message, EMAIL_HOST_USER, [email],fail_silently=False)
         
         return validate_data
 
@@ -181,7 +183,16 @@ class ResetPasswordSendSerializer(serializers.Serializer):
             user.reset_otp=otp
             user.save()
             print(f"____________________________          {otp}           _____________________________________")
-            # send_email(email_subject, email_body, EMAIL_HOST_USER, [email])
+            email_subject = "OTP Verification"
+        # message = render_to_string(
+        #     "email_templates/trainee_user_registration_by_admin.html",
+        #     {
+        #         "email": email,
+        #         "password": password,
+        #     },
+        # )
+            message = f"Please verify your otp, Your OTP is: {otp}"
+            send_mail(email_subject, message, EMAIL_HOST_USER, [email],fail_silently=False)
 
         else:
             raise serializers.ValidationError({"message": "Email is not registered!"})
