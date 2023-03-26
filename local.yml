@@ -1,51 +1,29 @@
-version: '3'
-
-volumes:
-  ecommerce_local_postgres_data: {}
-  ecommerce_local_postgres_data_backups: {}
+version: '3.8'
 
 services:
   django:
-    build:
+    build: 
       context: .
       dockerfile: ./compose/local/django/Dockerfile
-    image: ecommerce_local_django
-    container_name: ecommerce_local_django
-    depends_on:
-      - postgres
-    volumes:
-      - .:/app:z
-    env_file:
-      - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+    image: django_image
     ports:
-      - "8000:8000"
+      - 8000:8000
+    env_file:
+      - ./.envs/.local/.postgres
+    volumes:
+      - .:/app
     command: /start
+    depends_on: 
+      - db
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: ecommerce_production_postgres
-    container_name: ecommerce_local_postgres
+  db:
+    image: postgres
+    container_name: postgres_cont
+    env_file: ./.envs/.local/.postgres
     volumes:
-      - ecommerce_local_postgres_data:/var/lib/postgresql/data
-      - ecommerce_local_postgres_data_backups:/backups
-    env_file:
-      - ./.envs/.local/.postgres
-
-  docs:
-    image: ecommerce_local_docs
-    container_name: ecommerce_local_docs
-    build:
-      context: .
-      dockerfile: ./compose/local/docs/Dockerfile
-    env_file:
-      - ./.envs/.local/.django
-    volumes:
-      - ./docs:/docs:z
-      - ./config:/app/config:z
-      - ./ecommerce:/app/ecommerce:z
+      - pgdata:/var/lib/postgresql/data/
     ports:
-      - "9000:9000"
-    command: /start-docs
+      - "5433:5432"
+    
+volumes:
+  pgdata:
