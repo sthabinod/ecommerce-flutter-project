@@ -10,7 +10,7 @@ ARG APP_HOME=/app
 
 WORKDIR ${APP_HOME}
 
-COPY ./compose/django/start /start
+COPY ./compose/local/django/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
