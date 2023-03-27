@@ -31,7 +31,7 @@ class Product(TimeStampAbstractModel):
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     color = models.ManyToManyField(Color)
     size = models.ManyToManyField(Size)
-    quantity = models.IntegerField()
+
     
     def __str__(self):
         return self.name

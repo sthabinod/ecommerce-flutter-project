@@ -203,11 +203,11 @@ class ResetPasswordSendSerializer(serializers.Serializer):
   
   
 class VerifyOTPSerializer(serializers.Serializer):
-    otp = serializers.CharField(max_length=5)
+    otp = serializers.CharField(max_length=6)
     email = serializers.EmailField()
     
 class VerifyOTPResetSerializer(serializers.Serializer):
-    otp = serializers.CharField(max_length=5)
+    otp = serializers.CharField(max_length=6)
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
     """
     Resets password using user email

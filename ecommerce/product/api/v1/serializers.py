@@ -20,7 +20,7 @@ class ProductSerializer(ModelSerializer):
     size = SizeSerializer(read_only=True,many=True)
     class Meta:
         model=Product
-        fields=['id','name','description','price','image','category','quantity','size','color']
+        fields=['id','name','description','price','image','category','size','color']
         
         
         
