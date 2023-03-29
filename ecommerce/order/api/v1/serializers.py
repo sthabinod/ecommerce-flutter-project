@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer,Serializer
 from ecommerce.order.models import Order,OrderItem,Cart,CartItems
-from ecommerce.product.models import Product,Size,Color
+from ecommerce.product.models import Product,Size,Color,Stock
 from rest_framework import serializers,status
 from ecommerce.product.api.v1.serializers import ProductSerializer
 
@@ -44,7 +44,7 @@ class CartItemSerailizer(ModelSerializer):
         read_only_fields=('cart',)
         
 
-    
+
     
     
 
@@ -65,12 +65,21 @@ class CartItemWriteSerailizer(ModelSerializer):
         quantity = self._kwargs["data"].pop("quantity")
         size = self._kwargs["data"].pop("size")
         
-        product_obj = Product.objects.get(id=product)
-        size_obj = Size.objects.get(id=size)
-        color_obj = Color.objects.get(id=color)
-        cart = Cart.objects.get(user=user)
+        if Stock.objects.get(product=product,color=color,size=size).quantity>0:
+            product_obj = Product.objects.get(id=product)
+            size_obj = Size.objects.get(id=size)
+            color_obj = Color.objects.get(id=color)
+            cart = Cart.objects.get(user=user)
         
-        cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart,color=color_obj,size=size_obj)
+            cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart,color=color_obj,size=size_obj)
+        else:
+            raise serializers.ValidationError(
+                {
+                    "status": "fail",
+                    "statusCode": status.HTTP_400_BAD_REQUEST,
+                    "message": "Product is out of stock",
+                }
+            )
         if errors:
             raise serializers.ValidationError(
                 {
