@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from ecommerce.product.models import Product,Category, Stock
+from ecommerce.product.models import Product,Category, Stock,Size,Color
 from ecommerce.product.api.v1.serializers import ProductSerializer,CategorySerializer,PriceProductSearchSerializer, StockSerializer
 from rest_framework.response import Response
 from rest_framework import status

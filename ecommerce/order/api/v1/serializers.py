@@ -26,7 +26,44 @@ class OrderItemSerailizer(ModelSerializer):
         read_only_fields=('order',)
 
  
+ 
+ 
+class CheckOutSerializer(ModelSerializer):
+    
+    my_calculated_field = serializers.SerializerMethodField()
 
+    def get_my_calculated_field(self, obj):
+        sum=0
+        # calculate the value for the field
+        product = obj["product"]
+        sum +=product.price
+        
+        # return the calculated value
+        return sum
+    
+    class Meta:
+        model=CartItems
+        fields=['product','quantity','cart','size','color','my_calculated_field']
+        read_only_fields=('cart',)
+
+
+
+    # def validate(self, data):
+    #     sum = 0
+    #     errors = {}
+    #     product = data["product"]
+    #     sum +=product.price
+    #     data['sum']=sum
+    #     print(data)
+    #     if errors:
+    #         raise serializers.ValidationError(
+    #             {
+    #                 "status": "fail",
+    #                 "statusCode": status.HTTP_400_BAD_REQUEST,
+    #                 "errors": errors,
+    #             }
+    #         )
+    #     return data
 
 class OrderSerailizer(ModelSerializer):
     class Meta:
@@ -65,29 +102,32 @@ class CartItemWriteSerailizer(ModelSerializer):
         quantity = self._kwargs["data"].pop("quantity")
         size = self._kwargs["data"].pop("size")
         
-        if Stock.objects.get(product=product,color=color,size=size).quantity>0:
-            product_obj = Product.objects.get(id=product)
-            size_obj = Size.objects.get(id=size)
-            color_obj = Color.objects.get(id=color)
-            cart = Cart.objects.get(user=user)
-        
-            cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart,color=color_obj,size=size_obj)
+        if Stock.objects.filter(product=product,color=color,size=size).exists():
+            if Stock.objects.get(product=product,color=color,size=size).quantity>0:
+                product_obj = Product.objects.get(id=product)
+                size_obj = Size.objects.get(id=size)
+                color_obj = Color.objects.get(id=color)
+                cart = Cart.objects.get(user=user)
+            
+                cart_items = CartItems.objects.create(product=product_obj,quantity=quantity,cart=cart,color=color_obj,size=size_obj)
+            else:
+                raise serializers.ValidationError(
+                    {
+                        "status": "fail",
+                        "statusCode": status.HTTP_400_BAD_REQUEST,
+                        "message": "Product is out of stock",
+                    }
+                )
         else:
             raise serializers.ValidationError(
-                {
-                    "status": "fail",
-                    "statusCode": status.HTTP_400_BAD_REQUEST,
-                    "message": "Product is out of stock",
-                }
-            )
-        if errors:
-            raise serializers.ValidationError(
-                {
-                    "status": "fail",
-                    "statusCode": status.HTTP_400_BAD_REQUEST,
-                    "errors": errors,
-                }
-            )
+                    {
+                        "status": "fail",
+                        "statusCode": status.HTTP_400_BAD_REQUEST,
+                        "message": "Product with this size and color is not available",
+                    }
+                )
+            
+      
         return validate_data
      
 class CartSerailizer(ModelSerializer):

@@ -15,7 +15,7 @@ class ColorSerializer(ModelSerializer):
         fields=['id','color']
 
 class StockSerializer(ModelSerializer):
-    size = SizeSerializer(read_only=True)
+    size = serializers.CharField(source='size.title', read_only=True)
     color = ColorSerializer(read_only=True)
     class Meta:
         model=Stock
@@ -30,11 +30,22 @@ class CategorySerializer(ModelSerializer):
 class ProductSerializer(ModelSerializer):
     stock = StockSerializer(source="stock_set", read_only=True, many=True)
     category = CategorySerializer(read_only=True)
+    sizes = serializers.SerializerMethodField()
+    colors = serializers.SerializerMethodField()
     class Meta:
         model=Product
-        fields=['id','name','description','price','image','category','stock']
+        fields=['id','name','description','price','image','category','sizes','colors','stock']
         
-    
+    def get_sizes(self, obj):
+        size_ids = obj.stock_set.values_list("size", flat=True).distinct()
+        sizes = Size.objects.filter(id__in=size_ids)
+        serializer = SizeSerializer(sizes, many=True)
+        return serializer.data
+    def get_colors(self, obj):
+        color_ids = obj.stock_set.values_list("size", flat=True).distinct()
+        colors = Color.objects.filter(id__in=color_ids)
+        serializer = ColorSerializer(colors, many=True)
+        return serializer.data
     
         
         
