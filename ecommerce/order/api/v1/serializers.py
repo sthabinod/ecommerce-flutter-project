@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer,Serializer
 from ecommerce.order.models import Order,OrderItem,Cart,CartItems
 from ecommerce.product.models import Product,Size,Color,Stock
 from rest_framework import serializers,status
-from ecommerce.product.api.v1.serializers import ProductSerializer
+from ecommerce.product.api.v1.serializers import ProductSerializer,SizeSerializer,ColorSerializer
 
 class OrderItemWriteSerailizer(ModelSerializer):
     class Meta:
@@ -27,7 +27,37 @@ class OrderItemSerailizer(ModelSerializer):
 
  
  
- 
+class VerifyStockSerializer(Serializer):
+    size = serializers.PrimaryKeyRelatedField(queryset=Size.objects.all(), source='size_set')
+    color = serializers.PrimaryKeyRelatedField(queryset=Color.objects.all(), source='color_set')
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product_set')
+    quantity = serializers.IntegerField(read_only=True)
+    class Meta:
+        fields=['product','size','color']
+
+    def validate(self,attrs):
+        errors = {}
+        product = attrs.get("product_set")
+        size = attrs.get("size_set")
+        color = attrs.get("color_set")    
+        
+        if Stock.objects.filter(product=product,size=size,color=color):
+            if Stock.objects.get(product=product,size=size,color=color).quantity<=0:
+                errors["out_of_stock"]="No stock available with this product"  
+            else:
+                attrs['quantity']=Stock.objects.get(product=product,size=size,color=color).quantity
+                return attrs  
+        else:
+            errors["no_stock"]="No stock found"  
+
+        if errors:
+            raise serializers.ValidationError(
+                {
+                    "status": "fail",
+                    "statusCode": status.HTTP_400_BAD_REQUEST,
+                    "errors": errors,
+                }
+            )  
 class CheckOutSerializer(ModelSerializer):
     
     my_calculated_field = serializers.SerializerMethodField()
@@ -37,7 +67,6 @@ class CheckOutSerializer(ModelSerializer):
         # calculate the value for the field
         product = obj["product"]
         sum +=product.price
-        
         # return the calculated value
         return sum
     
@@ -80,10 +109,6 @@ class CartItemSerailizer(ModelSerializer):
         fields=['product','quantity','cart','size','color']
         read_only_fields=('cart',)
         
-
-
-    
-    
 
 class CartItemWriteSerailizer(ModelSerializer):
     
