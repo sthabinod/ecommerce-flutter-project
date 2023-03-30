@@ -52,11 +52,10 @@ class VerifyStockSerializer(Serializer):
 
         if errors:
             raise serializers.ValidationError(
-                {
-                    "status": "fail",
-                    "statusCode": status.HTTP_400_BAD_REQUEST,
-                    "errors": errors,
-                }
+               {
+                   "status":"Not Found",
+                   "statusCode":status.HTTP_404_NOT_FOUND,
+                   "message":errors}
             )  
 class CheckOutSerializer(ModelSerializer):
     

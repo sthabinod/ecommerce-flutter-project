@@ -48,7 +48,7 @@ class CartItemByUser(APIView):
                 "message": "All Cart Items for a user",
             })
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"Cart is not found for user"})      
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"Cart is not found for user"},status=status.HTTP_404_NOT_FOUND)      
 
 
 
@@ -73,7 +73,7 @@ class AddToCartView(APIView):
         else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "error": serializer.errors})
+                    "error": serializer.errors},status=status.HTTP_404_NOT_FOUND)
                 
           
 class OrderProductView(APIView):
@@ -99,7 +99,8 @@ class OrderProductView(APIView):
         else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "error": serializer.errors})
+                    "error": serializer.errors},
+                                status=status.HTTP_404_NOT_FOUND)
                 
 class CheckoutView(APIView):
     serializer_class=CheckOutSerializer
@@ -113,7 +114,7 @@ class CheckoutView(APIView):
                 "message": "Checkout details",
             })
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors})      
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors},status=status.HTTP_404_NOT_FOUND)      
         
 
 class VerifyStock(APIView):
@@ -128,4 +129,4 @@ class VerifyStock(APIView):
                 "message": "Found details",
             })
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors})      
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors}, status=status.HTTP_404_NOT_FOUND)      

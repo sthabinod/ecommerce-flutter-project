@@ -82,7 +82,7 @@ class SearchProduct(APIView):
                 "message": f"Found Product with {search_key}",
             })
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {search_key} keyword not found!"})      
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {search_key} keyword not found!"},status=status.HTTP_404_NOT_FOUND)      
 
 class SearchProductByPrice(APIView):
     serializer_class=PriceProductSearchSerializer
@@ -100,6 +100,6 @@ class SearchProductByPrice(APIView):
                 "message": f"Found Product with {from_price} to {to_price}",
                 })
             else:
-                return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      
+                return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"},status=status.HTTP_404_NOT_FOUND)      
         else:
-            return Response({"status":"ERROR","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"})      
+            return Response({"status":"ERROR","statusCode":status.HTTP_404_NOT_FOUND,"message":f"Product with {from_price} to {to_price} not found!"},status=status.HTTP_404_NOT_FOUND)      

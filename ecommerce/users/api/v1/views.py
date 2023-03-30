@@ -25,7 +25,7 @@ class ListAddressByUser(APIView):
                 "message": "All address for user fetched",
             })
         else:
-            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"No address of the user"})      
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"No address of the user"},status=status.HTTP_404_NOT_FOUND)      
 
 
 
@@ -99,11 +99,11 @@ class VerifyOTP(APIView):
             else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "message": "OTP is not matched"})
+                    "message": "OTP is not matched"},status=status.HTTP_404_NOT_FOUND)
         else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "message": "User not found with this email address!"})
+                    "message": "User not found with this email address!"},status=status.HTTP_404_NOT_FOUND)
 
 class VerifyOTPReset(APIView):
     serializer_class=VerifyOTPResetSerializer
@@ -131,11 +131,11 @@ class VerifyOTPReset(APIView):
             else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "message": "OTP is not matched"})
+                    "message": "OTP is not matched"},status=status.HTTP_404_NOT_FOUND)
         else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "message": "OTP expired or not found!"})
+                    "message": "OTP expired or not found!"},status=status.HTTP_404_NOT_FOUND)
 
 
 
@@ -163,7 +163,7 @@ class ResetPasswordSend(APIView):
         else:
                 return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "error": serializer.errors})
+                    "error": serializer.errors},status=status.HTTP_404_NOT_FOUND)
    
             
 
