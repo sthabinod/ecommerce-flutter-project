@@ -403,6 +403,4 @@ class DefaultAddressSerializer(serializers.ModelSerializer):
     # user = UserSerializer(read_only=True)
     class Meta:
         model=Address
-        fields=('default')
-
-    
+        fields=('default',)
