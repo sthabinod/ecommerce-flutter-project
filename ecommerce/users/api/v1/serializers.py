@@ -389,7 +389,7 @@ class AddressSerializer(serializers.ModelSerializer):
     # user = UserSerializer(read_only=True)
     class Meta:
         model=Address
-        fields=('id','longitude','latitude','user')
+        fields=('id','name','longitude','latitude','user')
         read_only_fields=('user',)
 
     
