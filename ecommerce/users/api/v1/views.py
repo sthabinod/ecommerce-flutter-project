@@ -5,10 +5,11 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.views import APIView
-from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer,ResetPasswordSendSerializer,VerifyOTPResetSerializer,ChangePasswordAfterOTPSerializer,AddressSerializer
+from ecommerce.users.api.v1.serializers import LoginSerializer,RegisterSerializer,ResetPasswordEmailRequestSerializer,PasswordTokenCheckSerilizer, SetNewPasswordSerializer, ChangePasswordSerializer,VerifyOTPSerializer,ResetPasswordSendSerializer,VerifyOTPResetSerializer,ChangePasswordAfterOTPSerializer,AddressSerializer,DefaultAddressSerializer
 from drf_spectacular.utils import extend_schema, inline_serializer
 from ecommerce.users.models import Address
 from ecommerce.users.api.v1.serializers import UserSerializer
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -53,7 +54,23 @@ class AddAddressByUser(APIView):
                     "statusCode": status.HTTP_404_NOT_FOUND,
                     "message": "Address add fail!"},status=status.HTTP_404_NOT_FOUND)
 
-
+class AddressDefaultUpdate(APIView):
+    serializer_class=DefaultAddressSerializer   
+    def patch(self,request,**kwargs):
+        id = kwargs.get('id') 
+        print(id)
+        instance = get_object_or_404(Address, id=id) 
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"success": "success", "message": "password reset success"},
+            status=status.HTTP_200_OK,
+            )
+        else:
+            return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "User not found with this email address!"},status=status.HTTP_404_NOT_FOUND)
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()

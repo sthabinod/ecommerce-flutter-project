@@ -41,7 +41,7 @@ class Address(TimeStampAbstractModel):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     
     def __str__(self) -> str:
-        return self.street
+        return self.name
     
 
 class UserProfile(TimeStampAbstractModel):
