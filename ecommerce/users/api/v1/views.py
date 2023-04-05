@@ -28,6 +28,31 @@ class ListAddressByUser(APIView):
             return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":"No address of the user"},status=status.HTTP_404_NOT_FOUND)      
 
 
+class AddAddressByUser(APIView):
+    serializer_class=AddressSerializer
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context={"user": request.user}
+        )
+
+        if serializer.is_valid():
+
+            data = serializer.save()
+
+            return Response(    
+                {
+                    "status": "Success",
+                    "statusCode": status.HTTP_200_OK,
+                    "data": serializer.validated_data,
+                    "message": "Add address Successful",
+                }
+            )
+
+        else:
+            return Response({"status": "fail",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "Address add fail!"},status=status.HTTP_404_NOT_FOUND)
+
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
@@ -303,6 +328,6 @@ class ChangePasswordAfterOTP(generics.GenericAPIView):
                 "status": "success",
                 "statusCode": status.HTTP_200_OK,
                 "message": "Password has been set successfully!",
-            },
+            }
         )
 

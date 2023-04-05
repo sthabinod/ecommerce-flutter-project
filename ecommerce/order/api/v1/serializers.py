@@ -7,8 +7,8 @@ from ecommerce.product.api.v1.serializers import ProductSerializer,SizeSerialize
 class OrderItemWriteSerailizer(ModelSerializer):
     class Meta:
         model=OrderItem
-        fields=('product','quantity','order','size','color')
-        read_only_fields=('order',)
+        fields=('id','product','quantity','order','size','color')
+        read_only_fields=('order','shipping_fee')
 
     
     def create(self, validated_data):
@@ -22,8 +22,8 @@ class OrderItemSerailizer(ModelSerializer):
     product = ProductSerializer()
     class Meta:
         model=OrderItem
-        fields=('product','quantity','order','size','color')
-        read_only_fields=('order',)
+        fields=('id','product','quantity','order','size','color','shipping_fee')
+        read_only_fields=('order','shipping_fee')
 
  
  
@@ -59,19 +59,27 @@ class VerifyStockSerializer(Serializer):
             )  
 class CheckOutSerializer(ModelSerializer):
     
-    my_calculated_field = serializers.SerializerMethodField()
+    # my_calculated_field = serializers.SerializerMethodField()
+    total_value = serializers.SerializerMethodField()
 
     def get_my_calculated_field(self, obj):
         sum=0
         # calculate the value for the field
         product = obj["product"]
-        sum +=product.price
+        total = obj['quantity']*product.price
+        sum +=total
         # return the calculated value
         return sum
     
+    def get_total_value(self, obj):
+        total_value = 0
+        
+        total_value += self.get_my_calculated_field(obj)
+        return total_value
+    
     class Meta:
         model=CartItems
-        fields=['product','quantity','cart','size','color','my_calculated_field']
+        fields=['id','product','quantity','cart','size','color','total_value']
         read_only_fields=('cart',)
 
 
@@ -101,19 +109,20 @@ class OrderSerailizer(ModelSerializer):
 
 
 class CartItemSerailizer(ModelSerializer):
-    product = ProductSerializer()
-    
+    product = ProductSerializer(read_only=True)
+    size = SizeSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
     class Meta:
         model=CartItems
-        fields=['product','quantity','cart','size','color']
-        read_only_fields=('cart',)
+        fields=['id','product','quantity','cart','size','color']
+        read_only_fields=('cart','size','color')
         
 
 class CartItemWriteSerailizer(ModelSerializer):
     
     class Meta:
         model=CartItems
-        fields=['product','quantity','cart','size','color']
+        fields=['id','product','quantity','cart','size','color']
         read_only_fields=('cart',)
         
 

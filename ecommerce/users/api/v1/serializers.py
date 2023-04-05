@@ -88,10 +88,6 @@ class LoginSerializer(TokenObtainPairSerializer, serializers.ModelSerializer):
                 }
             )
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = ['street','city','postal_code','country']
 
 class RegisterSerializer(serializers.ModelSerializer):
     
@@ -388,3 +384,19 @@ class ChangePasswordAfterOTPSerializer(serializers.Serializer):
         user.set_password(new_password)
         user.save()
         return super().validate(attrs)
+    
+class AddressSerializer(serializers.ModelSerializer):
+    # user = UserSerializer(read_only=True)
+    class Meta:
+        model=Address
+        fields=('id','street','city','postal_code','country','user')
+        read_only_fields=('user',)
+
+    
+    def create(self, validated_data):
+        # order=Order.objects.create(user=self.context.get('user'))
+        validated_data.update({'user':self.context.get('user')})
+        return super().create(validated_data)
+    
+    
+    
