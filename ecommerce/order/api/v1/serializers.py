@@ -60,26 +60,37 @@ class VerifyStockSerializer(Serializer):
 class CheckOutSerializer(ModelSerializer):
     
     # my_calculated_field = serializers.SerializerMethodField()
-    total_value = serializers.SerializerMethodField()
+    product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(), source='product', write_only=True
+    )
+    size = SizeSerializer(read_only=True)
+    size_id = serializers.PrimaryKeyRelatedField(
+        queryset=Size.objects.all(), source='size', write_only=True
+    )
 
-    def get_my_calculated_field(self, obj):
-        sum=0
-        # calculate the value for the field
-        product = obj["product"]
-        total = obj['quantity']*product.price
-        sum +=total
-        # return the calculated value
-        return sum
+    color = ColorSerializer(read_only=True)
+    color_id = serializers.PrimaryKeyRelatedField(
+        queryset=Color.objects.all(), source='color', write_only=True
+    )
+    # def get_my_calculated_field(self, obj):
+    #     sum=0
+    #     # calculate the value for the field
+    #     product = obj["product"]
+    #     total = obj['quantity']*product.price
+    #     sum +=total
+    #     # return the calculated value
+    #     return sum
     
-    def get_total_value(self, obj):
-        total_value = 0
+    # def get_total_value(self, obj):
+    #     total_value = 0
         
-        total_value += self.get_my_calculated_field(obj)
-        return total_value
+    #     total_value += self.get_my_calculated_field(obj)
+    #     return total_value
     
     class Meta:
         model=CartItems
-        fields=['id','product','quantity','cart','size','color','total_value']
+        fields=['id','product','product_id','quantity','cart','size','size_id','color','color_id']
         read_only_fields=('cart',)
 
 
