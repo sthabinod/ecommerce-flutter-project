@@ -3,12 +3,13 @@ from ecommerce.order.models import Order,OrderItem,Cart,CartItems
 from ecommerce.product.models import Product,Size,Color,Stock
 from rest_framework import serializers,status
 from ecommerce.product.api.v1.serializers import ProductSerializer,SizeSerializer,ColorSerializer
+from ecommerce.users.api.v1.serializers import AddressSerializer,UserSerializer
 
 class OrderItemWriteSerailizer(ModelSerializer):
     class Meta:
         model=OrderItem
         fields=('id','product','quantity','order','size','color')
-        read_only_fields=('order','shipping_fee')
+        read_only_fields=('order',)
 
     
     def create(self, validated_data):
@@ -22,8 +23,8 @@ class OrderItemSerailizer(ModelSerializer):
     product = ProductSerializer()
     class Meta:
         model=OrderItem
-        fields=('id','product','quantity','order','size','color','shipping_fee')
-        read_only_fields=('order','shipping_fee')
+        fields=('id','product','quantity','order','size','color')
+        read_only_fields=('order',)
 
  
  
@@ -113,6 +114,8 @@ class CheckOutSerializer(ModelSerializer):
     #     return data
 
 class OrderSerailizer(ModelSerializer):
+    address = AddressSerializer()
+    user = UserSerializer()
     class Meta:
         model=Order
         fields='__all__'

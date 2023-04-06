@@ -23,7 +23,6 @@ class CartItems(TimeStampAbstractModel):
     
 class Order(TimeStampAbstractModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    shipping_fee = models.DecimalField(max_digits=10,decimal_places=4,default='120.00')
     user = models.ForeignKey(
         "users.User",
         on_delete=models.SET_NULL,
@@ -32,6 +31,7 @@ class Order(TimeStampAbstractModel):
         related_name="order",
     )
     address = models.ForeignKey(Address,on_delete=models.CASCADE)
+    total = models.DecimalField(max_digits=10,decimal_places=4)
     
     
     
@@ -41,6 +41,7 @@ class OrderItem(TimeStampAbstractModel):
     order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name="order_items")
     size = models.ForeignKey(Size,on_delete=models.CASCADE)
     color = models.ForeignKey(Color,on_delete=models.CASCADE)
+    shipping_fee = models.DecimalField(max_digits=10,decimal_places=4,default='120.00')
     
     
     

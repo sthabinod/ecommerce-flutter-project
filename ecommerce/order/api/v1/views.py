@@ -80,7 +80,7 @@ class OrderProductView(APIView):
     serializer_class=OrderItemWriteSerailizer
     def post(self,request):
         
-        address_id = request.data[1]['address']
+        address_id = request.data[0]['address']
         
         address = Address.objects.get(id=address_id)
         
