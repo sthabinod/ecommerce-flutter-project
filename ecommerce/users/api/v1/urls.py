@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from ecommerce.users.api.v1.views import (
-    UserLoginView,UserRegisterView,ChangePassword,VerifyOTP,ResetPasswordSend,VerifyOTPReset,ChangePasswordAfterOTP,ListAddressByUser,AddAddressByUser,AddressDefaultUpdate
+    UserLoginView,UserRegisterView,ChangePassword,VerifyOTP,ResetPasswordSend,VerifyOTPReset,ChangePasswordAfterOTP,ListAddressByUser,AddAddressByUser,AddressDefaultUpdate,UpdateAddress
 )
 
 
@@ -22,6 +22,7 @@ urlpatterns = [
     path("address-by-user/", ListAddressByUser.as_view(), name="address_by_user"),
     path("add-address-by-user/",AddAddressByUser.as_view(), name="add_address_by_user"),
     path("update-address-default/<int:id>",AddressDefaultUpdate.as_view(), name="update_address_default"),
+    path("update-address/<int:id>",UpdateAddress.as_view(), name="update_address_default"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

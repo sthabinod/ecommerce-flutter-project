@@ -35,6 +35,7 @@ class User(AbstractUser):
 
 class Address(TimeStampAbstractModel):
     name = models.CharField(max_length=100)
+    address = models.CharField(max_length=256)
     longitude = models.DecimalField(max_digits=10,decimal_places=5)
     latitude = models.DecimalField(max_digits=10,decimal_places=5)
     default = models.BooleanField(blank=True,null=True,default=False)

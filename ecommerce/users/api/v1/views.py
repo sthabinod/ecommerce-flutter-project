@@ -62,15 +62,39 @@ class AddressDefaultUpdate(APIView):
         instance = get_object_or_404(Address, id=id) 
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
+            user_address = Address.objects.filter(user=request.user)
+            for address in user_address:
+                address.default=False
+                address.save()
             serializer.save()
             return Response(
-                {"success": "success", "message": "password reset success"},
+                {"success": "success", "message": f"Default status changed for Address, {instance} to true"},
             status=status.HTTP_200_OK,
             )
         else:
             return Response({"status": "Failue",
                     "statusCode": status.HTTP_404_NOT_FOUND,
-                    "message": "User not found with this email address!"},status=status.HTTP_404_NOT_FOUND)
+                    "message": "Could not change default status for Address!"},status=status.HTTP_404_NOT_FOUND)
+
+
+class UpdateAddress(APIView):
+    serializer_class=AddressSerializer   
+    def patch(self,request,**kwargs):
+        id = kwargs.get('id') 
+        print(id)
+        instance = get_object_or_404(Address, id=id) 
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {"success": "success", "message": "Address updated successfully!"},
+            status=status.HTTP_200_OK,
+            )
+        else:
+            return Response({"status": "Failue",
+                    "statusCode": status.HTTP_404_NOT_FOUND,
+                    "message": "Address could not updated successfully!"},status=status.HTTP_404_NOT_FOUND)
+
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
