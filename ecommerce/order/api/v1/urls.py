@@ -14,6 +14,7 @@ urlpatterns = [
     path("order-products/", views.OrderProductView.as_view(), name="order_product_view"),
     path("checkout/", views.CheckoutView.as_view(), name="checkout"),
     path("verify-stock/", views.VerifyStock.as_view(), name="verify-stock"),
+    path("verify-max-stock-selection/", views.VerifyMaxStockSelection.as_view(), name="verify-stock-max"),
     
 ]
 

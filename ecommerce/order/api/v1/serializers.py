@@ -58,6 +58,38 @@ class VerifyStockSerializer(Serializer):
                    "statusCode":status.HTTP_404_NOT_FOUND,
                    "message":errors}
             )  
+            
+class VerifyMaxStockSelectionSerializer(Serializer):
+    size = serializers.PrimaryKeyRelatedField(queryset=Size.objects.all(), source='size_set')
+    color = serializers.PrimaryKeyRelatedField(queryset=Color.objects.all(), source='color_set')
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), source='product_set')
+    quantity = serializers.IntegerField()
+    class Meta:
+        fields=['product','size','color']
+
+    def validate(self,attrs):
+        errors = {}
+        product = attrs.get("product_set")
+        size = attrs.get("size_set")
+        color = attrs.get("color_set")
+        quantity = attrs.get("quantity")    
+        
+        if Stock.objects.filter(product=product,size=size,color=color):
+            if Stock.objects.get(product=product,size=size,color=color).quantity<quantity:
+                errors["out_of_stock"]=  f"There are total {Stock.objects.get(product=product,size=size,color=color).quantity} only"
+            else:
+                attrs['quantity']=Stock.objects.get(product=product,size=size,color=color).quantity
+                return attrs  
+        else:
+            errors["no_stock"]="No stock found"  
+
+        if errors:
+            raise serializers.ValidationError(
+               {
+                   "status":"Not Found",
+                   "statusCode":status.HTTP_404_NOT_FOUND,
+                   "message":errors}
+            )  
 class CheckOutSerializer(ModelSerializer):
     
     # my_calculated_field = serializers.SerializerMethodField()

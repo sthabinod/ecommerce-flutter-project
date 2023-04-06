@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from ecommerce.order.models import OrderItem,Order,CartItems,Cart
-from ecommerce.order.api.v1.serializers import OrderSerailizer,OrderItemSerailizer,CartItemSerailizer,CartItemWriteSerailizer,OrderItemWriteSerailizer, CheckOutSerializer,VerifyStockSerializer
+from ecommerce.order.api.v1.serializers import OrderSerailizer,OrderItemSerailizer,CartItemSerailizer,CartItemWriteSerailizer,OrderItemWriteSerailizer, CheckOutSerializer,VerifyStockSerializer,VerifyMaxStockSelectionSerializer
 from ecommerce.users.models import Address
 from rest_framework.response import Response
 from rest_framework import status
@@ -130,3 +130,17 @@ class VerifyStock(APIView):
             })
         else:
             return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors}, status=status.HTTP_404_NOT_FOUND)      
+
+class VerifyMaxStockSelection(APIView):
+    serializer_class=VerifyMaxStockSelectionSerializer
+    def post(self,request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            return Response( {
+                "status": "Success",
+                "statusCode": status.HTTP_200_OK,
+                "data": serializer.data,
+                "message": "Stock found",
+            })
+        else:
+            return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors}, status=status.HTTP_404_NOT_FOUND)  
