@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from ecommerce.order.models import OrderItem,Order,CartItems,Cart
+from ecommerce.product.models import Product,Size,Color,Stock
 from ecommerce.order.api.v1.serializers import OrderSerailizer,OrderItemSerailizer,CartItemSerailizer,CartItemWriteSerailizer,OrderItemWriteSerailizer, CheckOutSerializer,VerifyStockSerializer,VerifyMaxStockSelectionSerializer
 from ecommerce.users.models import Address
 from rest_framework.response import Response
@@ -79,14 +80,25 @@ class AddToCartView(APIView):
 class OrderProductView(APIView):
     serializer_class=OrderItemWriteSerailizer
     def post(self,request):
-        
+        print(request.data)
         address_id = request.data[0]['address']
-        
-        address = Address.objects.get(id=address_id)
-        
-        order=Order.objects.create(user=request.user,address=address)
+        address = None
+        if Address.objects.filter(id=address_id).exists():
+            address = Address.objects.get(id=address_id) 
+        total =request.data[-1]['total']
+        print(total)
+        order=Order.objects.create(user=request.user,address=address,total=total)
         serializer = self.serializer_class(data=request.data,many=True, context={'order':order})
-        if serializer.is_valid():   
+        if serializer.is_valid():  
+            for item in request.data:
+                product = Product.objects.get(id=item['product'])
+                size = Size.objects.get(id=item['size'])
+                color = Color.objects.get(id=item['size'])
+                quantity =item['size']
+                
+                if Stock.objects.filter(product=product,size=size,color=color).exists():
+                    Stock.objects.get(product=product,size=size,color=color).quantity-quantity
+         
             serializer.save()
             return Response(
                 {
@@ -107,11 +119,24 @@ class CheckoutView(APIView):
     def post(self,request):
         serializer = CheckOutSerializer(data=request.data,many=True)
         if serializer.is_valid():
+            total = 0
+            print(request.data)
+            for item in request.data:
+                product = Product.objects.get(id=item['product_id'])
+                sub = product.price*item['quantity']
+                total+=sub
+            total+=100
+
+            # serializer.data['total']=total
+            print(serializer.data)
             return Response( {
                 "status": "Success",
                 "statusCode": status.HTTP_200_OK,
+                "total":total,
                 "data": serializer.data,
-                "message": "Checkout details",
+                "message": "Fetched checkout details",
+                
+                
             })
         else:
             return Response({"status":"Not Found","statusCode":status.HTTP_404_NOT_FOUND,"message":serializer.errors},status=status.HTTP_404_NOT_FOUND)      

@@ -14,6 +14,7 @@ class OrderItemWriteSerailizer(ModelSerializer):
     
     def create(self, validated_data):
         # order=Order.objects.create(user=self.context.get('user'))
+        
         validated_data.update({'order':self.context.get('order')})
         return super().create(validated_data)
     
@@ -127,23 +128,6 @@ class CheckOutSerializer(ModelSerializer):
         read_only_fields=('cart',)
 
 
-
-    # def validate(self, data):
-    #     sum = 0
-    #     errors = {}
-    #     product = data["product"]
-    #     sum +=product.price
-    #     data['sum']=sum
-    #     print(data)
-    #     if errors:
-    #         raise serializers.ValidationError(
-    #             {
-    #                 "status": "fail",
-    #                 "statusCode": status.HTTP_400_BAD_REQUEST,
-    #                 "errors": errors,
-    #             }
-    #         )
-    #     return data
 
 class OrderSerailizer(ModelSerializer):
     address = AddressSerializer()
